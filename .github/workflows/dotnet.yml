@@ -1,0 +1,33 @@
+name: .NET
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  BuildConfiguration: debug
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.101
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Pack
+      run: dotnet pack -c ${{env.BuildConfiguration}} --no-restore ValhallaWebSockets/ValhallaWebSockets.csproj
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.2
+      with:
+        # Artifact name
+        name: nuget
+        # A file, directory or wildcard pattern that describes what to upload
+        path: ValhallaWebSockets/bin/${{env.BuildConfiguration}}/*.nupkg
