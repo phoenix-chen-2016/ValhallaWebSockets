@@ -45,4 +45,4 @@ jobs:
     - name: push
       env:
         NugetSource: https://www.myget.org/F/valhalla/api/v2/package
-      run: dotnet nuget push "nuget\*.nupkg" -s "${{ NugetSource }}" -k "${{ secrets.NUGETAPIKEY }}" --skip-duplicate
+      run: dotnet nuget push "nuget\*.nupkg" -s "$NugetSource" -k "${{ secrets.NUGETAPIKEY }}" --skip-duplicate
