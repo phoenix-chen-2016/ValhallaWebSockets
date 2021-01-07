@@ -1,4 +1,4 @@
-name: .NET
+name: Build & Push
 
 on:
   push:
@@ -34,7 +34,7 @@ jobs:
         path: ValhallaWebSockets/bin/${{env.BuildConfiguration}}/*.nupkg
   push-myget:
     runs-on: self-hosted
-
+    needs: build
     steps:
     - name: Download a Build Artifact
       uses: actions/download-artifact@v2.0.8
@@ -44,4 +44,4 @@ jobs:
         # Destination path
         path: nuget
     - name: push
-      run: dotnet nuget push "nuget\*.nupkg" -s "${{ env.NugetSource }}" -k "${{ secrets.NUGETAPIKEY }}" --skip-duplicate
+      run: dotnet nuget push "nuget\*.nupkg" -s "$($env:NugetSource)" -k "${{ secrets.NUGETAPIKEY }}" --skip-duplicate
