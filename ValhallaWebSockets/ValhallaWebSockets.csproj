@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Valhalla.WebSockets</RootNamespace>
+    <Authors>Phoenix</Authors>
+    <Company>Valhalla</Company>
+    <Version>0.0.1</Version>
+    <RepositoryType>Git</RepositoryType>
+  </PropertyGroup>
+
+</Project>
