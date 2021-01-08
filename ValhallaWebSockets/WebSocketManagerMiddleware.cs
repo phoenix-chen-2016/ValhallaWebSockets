@@ -27,20 +27,14 @@ namespace Valhalla.WebSockets
 		public async Task InvokeAsync(HttpContext context)
 		{
 			if (!context.WebSockets.IsWebSocketRequest)
-			{
-				await m_Next(context);
 				return;
-			}
 
 			var cancelToken = context.RequestAborted;
 
 			var socket = await context.WebSockets.AcceptWebSocketAsync();
 
 			if (socket == null)
-			{
-				await m_Next(context);
 				return;
-			}
 
 			await m_Handler.OnConnectedAsync(socket, context, cancelToken);
 
