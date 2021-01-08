@@ -9,23 +9,26 @@ namespace Valhalla.WebSockets
 	public interface IWebSocketConnectionHandler
 	{
 		ValueTask OnConnectedAsync(
-			WebSocket socket,
 			HttpContext httpContext,
-			CancellationToken cancellationToken = default);
+			WebSocket socket,
+			CancellationToken cancellationToken);
 
 		ValueTask OnDisconnectedAsync(
+			HttpContext httpContext,
 			WebSocket socket,
-			CancellationToken cancellationToken = default);
+			CancellationToken cancellationToken);
 
 		ValueTask OnReceiveAsync(
+			HttpContext httpContext,
 			WebSocket socket,
 			ArraySegment<byte> buffer,
-			CancellationToken cancellationToken = default);
+			CancellationToken cancellationToken);
 
 		ValueTask OnCloseAsync(
+			HttpContext httpContext,
 			WebSocket socket,
 			WebSocketCloseStatus? closeStatus,
 			string? closeDescription,
-			CancellationToken cancellationToken = default);
+			CancellationToken cancellationToken);
 	}
 }

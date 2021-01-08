@@ -12,7 +12,7 @@ namespace Valhalla.WebSockets
 	{
 		private readonly ILogger<WebSocketManagerMiddleware<THandler>> m_Logger;
 		private readonly RequestDelegate m_Next;
-		private readonly THandler m_Handler;
+		private readonly THandler m_ConnectionHandler;
 
 		public WebSocketManagerMiddleware(
 			RequestDelegate next,
@@ -20,7 +20,7 @@ namespace Valhalla.WebSockets
 			ILogger<WebSocketManagerMiddleware<THandler>> logger)
 		{
 			m_Next = next;
-			m_Handler = handler ?? throw new ArgumentNullException(nameof(handler));
+			m_ConnectionHandler = handler ?? throw new ArgumentNullException(nameof(handler));
 			m_Logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
@@ -36,22 +36,23 @@ namespace Valhalla.WebSockets
 			if (socket == null)
 				return;
 
-			await m_Handler.OnConnectedAsync(socket, context, cancelToken);
+			await m_ConnectionHandler.OnConnectedAsync(context, socket, cancelToken);
 
-			await ReceiveAsync(socket, m_Handler, cancelToken);
+			await ReceiveAsync(context, socket, m_ConnectionHandler, cancelToken);
 		}
 
 		private async Task ReceiveAsync(
+			HttpContext context,
 			WebSocket socket,
 			THandler handler,
-			CancellationToken cancellationToken = default)
+			CancellationToken cancellationToken)
 		{
 			var receiveBuffer = WebSocket.CreateServerBuffer(4 * 1024);
 			var dataBuffer = new List<byte>(8 * 1024);
 
 			try
 			{
-				while (socket.State == WebSocketState.Open)
+				while (!cancellationToken.IsCancellationRequested && socket.State == WebSocketState.Open)
 				{
 					var result = await socket.ReceiveAsync(
 						buffer: receiveBuffer,
@@ -66,6 +67,7 @@ namespace Valhalla.WebSockets
 					{
 						case WebSocketMessageType.Close:
 							await handler.OnCloseAsync(
+								context,
 								socket,
 								result.CloseStatus,
 								result.CloseStatusDescription,
@@ -76,6 +78,7 @@ namespace Valhalla.WebSockets
 							if (result.EndOfMessage)
 							{
 								await handler.OnReceiveAsync(
+									context,
 									socket,
 									new ArraySegment<byte>(dataBuffer.ToArray(), 0, dataBuffer.Count),
 									cancellationToken);
@@ -87,7 +90,7 @@ namespace Valhalla.WebSockets
 			}
 			finally
 			{
-				await handler.OnDisconnectedAsync(socket, cancellationToken);
+				await handler.OnDisconnectedAsync(context, socket, cancellationToken);
 			}
 		}
 	}

@@ -6,7 +6,7 @@
 		<RootNamespace>Valhalla.WebSockets</RootNamespace>
 		<Authors>Phoenix</Authors>
 		<Company>Valhalla</Company>
-		<Version>0.0.3</Version>
+		<Version>0.0.4</Version>
 		<RepositoryType>Git</RepositoryType>
 		<IsPackable>true</IsPackable>
 		<OutputType>Library</OutputType>
