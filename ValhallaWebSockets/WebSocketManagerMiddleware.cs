@@ -73,6 +73,7 @@ namespace Valhalla.WebSockets
 								result.CloseStatusDescription,
 								cancellationToken);
 							dataBuffer.Clear();
+							await socket.CloseAsync(result.CloseStatus!.Value, result.CloseStatusDescription, cancellationToken);
 							break;
 						default:
 							if (result.EndOfMessage)
@@ -87,6 +88,10 @@ namespace Valhalla.WebSockets
 							break;
 					}
 				}
+			}
+			catch (OperationCanceledException)
+			{
+				m_Logger.LogWarning("Forced remote disconnection.");
 			}
 			finally
 			{
