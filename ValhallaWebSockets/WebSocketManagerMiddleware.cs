@@ -81,7 +81,7 @@ namespace Valhalla.WebSockets
 								await handler.OnReceiveAsync(
 									context,
 									socket,
-									new ArraySegment<byte>(dataBuffer.ToArray(), 0, dataBuffer.Count),
+									dataBuffer.ToArray(),
 									cancellationToken);
 								dataBuffer.Clear();
 							}

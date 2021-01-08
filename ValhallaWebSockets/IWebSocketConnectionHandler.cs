@@ -21,7 +21,7 @@ namespace Valhalla.WebSockets
 		ValueTask OnReceiveAsync(
 			HttpContext httpContext,
 			WebSocket socket,
-			ArraySegment<byte> buffer,
+			ReadOnlyMemory<byte> buffer,
 			CancellationToken cancellationToken);
 
 		ValueTask OnCloseAsync(
