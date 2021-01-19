@@ -7,14 +7,17 @@ namespace Microsoft.AspNetCore.Builder
 {
 	public static class EndpointsBuilderExtensions
 	{
-		public static IEndpointConventionBuilder MapWebSocketManager<THandler>(this IEndpointRouteBuilder endpoints, PathString path)
+		public static IEndpointConventionBuilder MapWebSocketManager<THandler>(
+			this IEndpointRouteBuilder endpoints,
+			PathString path,
+			params object[] handlerParameters)
 			where THandler : class, IWebSocketConnectionHandler
 		{
 			return endpoints.Map(
 				path,
 				endpoints.CreateApplicationBuilder()
 					.UseMiddleware<WebSocketManagerMiddleware<THandler>>(
-						ActivatorUtilities.CreateInstance<THandler>(endpoints.ServiceProvider))
+						ActivatorUtilities.CreateInstance<THandler>(endpoints.ServiceProvider, handlerParameters))
 					.Build());
 		}
 	}
